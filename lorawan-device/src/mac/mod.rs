@@ -148,8 +148,11 @@ impl Mac {
         newskey: NewSKey,
         appskey: AppSKey,
         devaddr: DevAddr<[u8; 4]>,
+        fcnt_up: FcntUp,
     ) {
-        self.state = State::Joined(Session::new(newskey, appskey, devaddr));
+        let session = Session::new(newskey, appskey, devaddr);
+
+        self.state = State::Joined(session);
     }
 
     /// Join via ABP. This does not transmit a join request frame, but instead sets the session.

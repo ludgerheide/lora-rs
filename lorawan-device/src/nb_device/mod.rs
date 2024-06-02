@@ -50,8 +50,8 @@ where
             JoinMode::OTAA { deveui, appeui, appkey } => {
                 self.handle_event(Event::Join(NetworkCredentials::new(appeui, deveui, appkey)))
             }
-            JoinMode::ABP { devaddr, appskey, newskey } => {
-                self.shared.mac.join_abp(newskey, appskey, devaddr);
+            JoinMode::ABP { devaddr, appskey, newskey, fcntUp } => {
+                self.shared.mac.join_abp(newskey, appskey, devaddr, fcntUp);
                 Ok(Response::JoinSuccess)
             }
         }

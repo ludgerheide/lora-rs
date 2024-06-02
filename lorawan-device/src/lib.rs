@@ -36,6 +36,7 @@ pub use lorawan::{
 pub use rand_core::RngCore;
 mod rng;
 pub use rng::Prng;
+use crate::mac::FcntUp;
 
 mod log;
 
@@ -73,5 +74,5 @@ pub trait Timings {
 /// Join the network using either OTAA or ABP.
 pub enum JoinMode {
     OTAA { deveui: DevEui, appeui: AppEui, appkey: AppKey },
-    ABP { newskey: NewSKey, appskey: AppSKey, devaddr: DevAddr<[u8; 4]> },
+    ABP { newskey: NewSKey, appskey: AppSKey, devaddr: DevAddr<[u8; 4]> , fcntUp: FcntUp},
 }
