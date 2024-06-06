@@ -150,8 +150,9 @@ impl Mac {
         devaddr: DevAddr<[u8; 4]>,
         fcnt_up: FcntUp,
     ) {
-        let session = Session::new(newskey, appskey, devaddr);
-
+        let mut session = Session::new(newskey, appskey, devaddr);
+        session.fcnt_up = fcnt_up;
+        
         self.state = State::Joined(session);
     }
 
