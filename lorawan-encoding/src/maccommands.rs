@@ -1,11 +1,3 @@
-// Copyright (c) 2018,2020 Ivaylo Petrov
-//
-// Licensed under the MIT license <LICENSE-MIT or
-// http://opensource.org/licenses/MIT>, at your option. This file may not be
-// copied, modified, or distributed except according to those terms.
-//
-// author: Ivaylo Petrov <ivajloip@gmail.com>
-
 use core::marker::PhantomData;
 
 #[derive(Debug, PartialEq)]
@@ -214,7 +206,7 @@ macro_rules! mac_cmds_enum {
         impl<'a> From<&'a super::parser::FHDR<'a>>
             for MacCommandIterator<$($outer_lifetime)*, $outer_type$(<$outer_lifetime>)*>
         {
-            fn from(fhdr: &'a super::parser::FHDR) -> Self {
+            fn from(fhdr: &'a super::parser::FHDR<'_>) -> Self {
                 Self {
                     data: &fhdr.data(),
                     index: 0,
@@ -226,7 +218,7 @@ macro_rules! mac_cmds_enum {
         impl<'a> From<&'a super::parser::FRMMacCommands<'a>>
             for MacCommandIterator<$($outer_lifetime)*, $outer_type$(<$outer_lifetime>)*>
         {
-            fn from(frmm: &'a super::parser::FRMMacCommands) -> Self {
+            fn from(frmm: &'a super::parser::FRMMacCommands<'_>) -> Self {
                 Self {
                     data: frmm.data(),
                     index: 0,
@@ -410,7 +402,7 @@ macro_rules! create_value_reader_fn {
 /// let mac_cmds: Vec<lorawan::maccommands::UplinkMacCommand> =
 ///     lorawan::maccommands::parse_uplink_mac_commands(&data).collect();
 /// ```
-pub fn parse_uplink_mac_commands(data: &[u8]) -> MacCommandIterator<UplinkMacCommand> {
+pub fn parse_uplink_mac_commands(data: &[u8]) -> MacCommandIterator<'_, UplinkMacCommand<'_>> {
     MacCommandIterator::new(data)
 }
 /// Parses bytes to downlink MAC commands if possible.
@@ -428,7 +420,7 @@ pub fn parse_uplink_mac_commands(data: &[u8]) -> MacCommandIterator<UplinkMacCom
 /// let mac_cmds: Vec<lorawan::maccommands::DownlinkMacCommand> =
 ///     lorawan::maccommands::parse_downlink_mac_commands(&data).collect();
 /// ```
-pub fn parse_downlink_mac_commands(data: &[u8]) -> MacCommandIterator<DownlinkMacCommand> {
+pub fn parse_downlink_mac_commands(data: &[u8]) -> MacCommandIterator<'_, DownlinkMacCommand<'_>> {
     MacCommandIterator::new(data)
 }
 
@@ -541,7 +533,7 @@ struct ChannelMaskDeserializer<const N: usize>;
 impl<'de, const N: usize> serde::de::Visitor<'de> for ChannelMaskDeserializer<N> {
     type Value = ChannelMask<N>;
 
-    fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
+    fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         formatter.write_str("ChannelMask byte.")
     }
 
@@ -727,7 +719,7 @@ impl<'a> RXParamSetupReqPayload<'a> {
     }
 
     /// RX2 frequency.
-    pub fn frequency(&self) -> Frequency {
+    pub fn frequency(&self) -> Frequency<'_> {
         Frequency::new_from_raw(&self.0[1..])
     }
 }
@@ -856,7 +848,7 @@ impl<'a> NewChannelReqPayload<'a> {
     );
 
     /// The frequency of the new or modified channel.
-    pub fn frequency(&self) -> Frequency {
+    pub fn frequency(&self) -> Frequency<'_> {
         Frequency::new_from_raw(&self.0[1..4])
     }
 
@@ -977,7 +969,7 @@ impl DlChannelReqPayload<'_> {
     );
 
     /// The frequency of the new or modified channel.
-    pub fn frequency(&self) -> Frequency {
+    pub fn frequency(&self) -> Frequency<'_> {
         Frequency::new_from_raw(&self.0[1..4])
     }
 }

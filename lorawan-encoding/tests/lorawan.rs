@@ -1,11 +1,3 @@
-// Copyright (c) 2017,2018,2020 Ivaylo Petrov
-//
-// Licensed under the MIT license <LICENSE-MIT or
-// http://opensource.org/licenses/MIT>, at your option. This file may not be
-// copied, modified, or distributed except according to those terms.
-//
-// author: Ivaylo Petrov <ivajloip@gmail.com>
-
 use lorawan::creator::*;
 use lorawan::default_crypto::DefaultFactory;
 use lorawan::keys::*;
@@ -599,7 +591,7 @@ fn test_validate_join_request_mic_when_not_ok() {
 }
 
 #[test]
-#[cfg(feature = "default-crypto,with-downlink")]
+#[cfg(feature = "default-crypto")]
 fn test_join_accept_creator() {
     let mut phy = JoinAcceptCreator::new();
     let key = AES128(app_key());
@@ -610,7 +602,7 @@ fn test_join_accept_creator() {
         .set_dl_settings(0)
         .set_rx_delay(0);
 
-    assert_eq!(phy.build(&key), &phy_join_accept_payload()[..]);
+    assert_eq!(phy.build(&key), Ok(&phy_join_accept_payload()[..]));
 }
 
 #[test]
